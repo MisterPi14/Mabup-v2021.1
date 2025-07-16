@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 
 
 namespace Agencia_de_viajes
@@ -20,8 +21,7 @@ namespace Agencia_de_viajes
         int ID = 0;
 
         //INSTANCIA
-        SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
-
+        OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
         public frmAgregar_Tarea(string atrUsuario, string atrContraseña)
         {
             Usuario = atrUsuario;
@@ -48,10 +48,10 @@ namespace Agencia_de_viajes
             {
 
                 //CONSULTANDO ID
-                SqlCommand Consulta_ID = new SqlCommand();
+                OracleCommand Consulta_ID = new OracleCommand();
                 Consulta_ID.Connection = conn;
 
-                SqlDataReader Lector;
+                OracleDataReader Lector;
                 conn.Open();
                 Consulta_ID.CommandText = "SELECT id FROM tb_Usuarios WHERE Usuario = '" + Usuario + "' AND Contraseña  = '" + Contraseña + "'";
                 Lector = Consulta_ID.ExecuteReader();
@@ -62,38 +62,46 @@ namespace Agencia_de_viajes
 
                 //GUARDANDO LA TAREA
 
-                SqlCommand Guardar_Tarea = new SqlCommand();
+                OracleCommand Guardar_Tarea = new OracleCommand();
                 Guardar_Tarea.Connection = conn;
 
                 
                 //CREANDO REGISTRO
-                Guardar_Tarea.CommandText = "INSERT INTO tb_Tareas VALUES (@id, @Titulo, @Fecha_Inicio, @Hora_Inicio, @Fecha_Entrega, @Hora_Entrega, @Materia, @Dificultad, @Tema_Tarea, @Completado)";
+                // sintaxis de sql server Guardar_Tarea.CommandText = "INSERT INTO tb_Tareas VALUES (@id, @Titulo, @Fecha_Inicio, @Hora_Inicio, @Fecha_Entrega, @Hora_Entrega, @Materia, @Dificultad, @Tema_Tarea, @Completado)";
+                Guardar_Tarea.CommandText = @"INSERT INTO tb_Tareas (
+                                id, Titulo, Fecha_Inicio, Hora_Inicio, Fecha_Entrega, 
+                                Hora_Entrega, Materia, Dificultad, Tema_Tarea, Completado
+                            ) VALUES (
+                                :id, :Titulo, :Fecha_Inicio, :Hora_Inicio, :Fecha_Entrega, 
+                                :Hora_Entrega, :Materia, :Dificultad, :Tema_Tarea, :Completado
+                            )";
+                // --- CREANDO PARÁMETROS PARA ORACLE ---
+                // Se usa ":" como prefijo y los tipos de dato de Oracle (OracleDbType)
 
-                //CREANDO PARAMETROS
-                Guardar_Tarea.Parameters.Add("@id", SqlDbType.Int);          
-                Guardar_Tarea.Parameters.Add("@Titulo", SqlDbType.NVarChar);
-                Guardar_Tarea.Parameters.Add("@Fecha_Inicio", SqlDbType.Date);
-                Guardar_Tarea.Parameters.Add("@Hora_Inicio", SqlDbType.Time);
-                Guardar_Tarea.Parameters.Add("@Fecha_Entrega", SqlDbType.Date);
-                Guardar_Tarea.Parameters.Add("@Hora_Entrega", SqlDbType.Time);
-                Guardar_Tarea.Parameters.Add("@Materia", SqlDbType.NVarChar);
-                Guardar_Tarea.Parameters.Add("@Dificultad", SqlDbType.Int);
-                Guardar_Tarea.Parameters.Add("@Tema_Tarea", SqlDbType.NVarChar);
-                Guardar_Tarea.Parameters.Add("@Completado", SqlDbType.Bit);
+                Guardar_Tarea.Parameters.Add(":id", OracleDbType.Int32);
+                Guardar_Tarea.Parameters.Add(":Titulo", OracleDbType.NVarchar2);
+                Guardar_Tarea.Parameters.Add(":Fecha_Inicio", OracleDbType.Date);
+                Guardar_Tarea.Parameters.Add(":Hora_Inicio", OracleDbType.Varchar2); // No hay tipo TIME, se usa Varchar2
+                Guardar_Tarea.Parameters.Add(":Fecha_Entrega", OracleDbType.Date);
+                Guardar_Tarea.Parameters.Add(":Hora_Entrega", OracleDbType.Varchar2); // No hay tipo TIME, se usa Varchar2
+                Guardar_Tarea.Parameters.Add(":Materia", OracleDbType.NVarchar2);
+                Guardar_Tarea.Parameters.Add(":Dificultad", OracleDbType.Int32);
+                Guardar_Tarea.Parameters.Add(":Tema_Tarea", OracleDbType.NVarchar2);
+                Guardar_Tarea.Parameters.Add(":Completado", OracleDbType.Int32);    // No hay tipo BIT, se usa un número (0 o 1)
 
+                // --- ASIGNANDO VALORES A LOS PARÁMETROS ---
+                // Se accede a los parámetros usando el prefijo ":"
 
-                //ASIGNANDO VALORES A LOS ATRIBUTOS
-
-                Guardar_Tarea.Parameters["@id"].Value = ID;
-                Guardar_Tarea.Parameters["@Titulo"].Value = txtTitulo_Tarea.Text;
-                Guardar_Tarea.Parameters["@Fecha_Inicio"].Value = DateTime.Today.ToString("dd-MM-yyyy");
-                Guardar_Tarea.Parameters["@Hora_Inicio"].Value = DateTime.Now.ToString("HH:mm:ss");
-                Guardar_Tarea.Parameters["@Fecha_Entrega"].Value = dtpFecha_Entrega.Text;
-                Guardar_Tarea.Parameters["@Hora_Entrega"].Value = cbHoras.Text + ":" + cbMinutos.Text + ":00.000";
-                Guardar_Tarea.Parameters["@Materia"].Value = cbMateria.Text;
-                Guardar_Tarea.Parameters["@Dificultad"].Value = Dificultad;
-                Guardar_Tarea.Parameters["@Tema_Tarea"].Value = cbTema_Tarea.Text;
-                Guardar_Tarea.Parameters["@Completado"].Value = 0;
+                Guardar_Tarea.Parameters[":id"].Value = ID;
+                Guardar_Tarea.Parameters[":Titulo"].Value = txtTitulo_Tarea.Text;
+                Guardar_Tarea.Parameters[":Fecha_Inicio"].Value = DateTime.Today; // ✨ Mejor práctica: enviar el objeto DateTime directamente
+                Guardar_Tarea.Parameters[":Hora_Inicio"].Value = DateTime.Now.ToString("HH:mm:ss");
+                Guardar_Tarea.Parameters[":Fecha_Entrega"].Value = dtpFecha_Entrega.Value; // ✨ Mejor práctica: usar .Value en lugar de .Text
+                Guardar_Tarea.Parameters[":Hora_Entrega"].Value = cbHoras.Text + ":" + cbMinutos.Text + ":00";
+                Guardar_Tarea.Parameters[":Materia"].Value = cbMateria.Text;
+                Guardar_Tarea.Parameters[":Dificultad"].Value = Dificultad;
+                Guardar_Tarea.Parameters[":Tema_Tarea"].Value = cbTema_Tarea.Text;
+                Guardar_Tarea.Parameters[":Completado"].Value = 0;
 
 
                 conn.Open();

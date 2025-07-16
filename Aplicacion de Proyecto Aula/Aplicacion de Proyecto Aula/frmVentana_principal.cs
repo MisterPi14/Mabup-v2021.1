@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient;
+//using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
+
 
 using System.Diagnostics;           //Librerias para abrir el programa de videos
 using System.Runtime.InteropServices;
@@ -18,7 +20,7 @@ namespace Agencia_de_viajes
     {
         string Usuario = "", Contraseña = "", Nombre = "";
         //INSTANCIAS
-        SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
+        OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
 
         [DllImport("user32.dll")]
         static extern IntPtr SetParent(IntPtr hwc, IntPtr hwp);
@@ -29,11 +31,10 @@ namespace Agencia_de_viajes
             Contraseña = atrContraseña;
 
             InitializeComponent();
-            
-            SqlCommand Consulta_Datos = new SqlCommand();
+            OracleCommand Consulta_Datos = new OracleCommand();
             Consulta_Datos.Connection = conn;
+            OracleDataReader Lector;
 
-            SqlDataReader Lector;
             conn.Open();
             Consulta_Datos.CommandText = "SELECT Nombre,Ap_Pat,Ap_Mat FROM tb_Usuarios WHERE Usuario = '" + Usuario + "' AND Contraseña  = '" + Contraseña + "'";
             Lector = Consulta_Datos.ExecuteReader();

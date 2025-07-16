@@ -26,3 +26,6 @@ GRANT PROGRAMADOR TO USR_MABUP;
 
 SELECT * FROM DBA_roles;
 SELECT * FROM DBA_users;
+
+select * from tb_usuarios;
+select * from tb_tareas;

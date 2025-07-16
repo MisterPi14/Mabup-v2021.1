@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 
 
 namespace Agencia_de_viajes
@@ -16,7 +17,7 @@ namespace Agencia_de_viajes
     {
         int ID_Usuario = 0;
 
-        SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
+        OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
 
         public frmRegistro()
         {

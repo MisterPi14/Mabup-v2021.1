@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 
 namespace Agencia_de_viajes
 {
@@ -27,7 +28,7 @@ namespace Agencia_de_viajes
 
 
         //INSTANCIA
-        SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
+        OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
 
         public frmGestor_Tareas(string atrUsuario, string atrContraseña)
         {
@@ -36,10 +37,10 @@ namespace Agencia_de_viajes
             InitializeComponent();
            
             //CONSULTANDO NUMERO DE TAREAS
-            SqlCommand Num_Tareas = new SqlCommand();
+            OracleCommand Num_Tareas = new OracleCommand();
             Num_Tareas.Connection = conn;
 
-            SqlDataReader Lector_Num_Tareas;
+            OracleDataReader Lector_Num_Tareas;
             conn.Open();
             Num_Tareas.CommandText = "SELECT MAX(Num_Tarea) FROM tb_Tareas";
             Lector_Num_Tareas = Num_Tareas.ExecuteReader();
@@ -53,8 +54,8 @@ namespace Agencia_de_viajes
             for (int n = 1; n <= n_Tareas; n++)
             {
                 //CONSULTANDO DATOS DE LAS TAREAS
-                SqlDataReader Lector;
-                SqlCommand Consulta_Tareas = new SqlCommand();
+                OracleDataReader Lector;
+                OracleCommand Consulta_Tareas = new OracleCommand();
                 Consulta_Tareas.Connection = conn;
 
 
@@ -62,7 +63,7 @@ namespace Agencia_de_viajes
 
                 StringBuilder Sel = new StringBuilder();
                 Sel.Append("SELECT Titulo,Fecha_Entrega,Hora_Entrega,Dificultad FROM tb_Usuarios JOIN tb_Tareas ON tb_Usuarios.id = tb_Tareas.id WHERE Usuario='" + Usuario + "' AND Contraseña = '" + Contraseña + "' AND Completado=0 AND Num_Tarea=" + n);
-                Consulta_Tareas = new SqlCommand(Sel.ToString(), conn);
+                Consulta_Tareas = new OracleCommand(Sel.ToString(), conn);
                 Lector = Consulta_Tareas.ExecuteReader();
                 if (Lector.Read())
                 {
@@ -109,9 +110,9 @@ namespace Agencia_de_viajes
             if (textBox1.Text != "")
             {
                 //CONSULTANDO ID
-                SqlCommand Consulta_ID = new SqlCommand();
+                OracleCommand Consulta_ID = new OracleCommand();
                 Consulta_ID.Connection = conn;
-                SqlDataReader Lector_ID;
+                OracleDataReader Lector_ID;
                 conn.Open();
                 Consulta_ID.CommandText = "SELECT id FROM tb_Usuarios WHERE Usuario = '" + Usuario + "' AND Contraseña = '" + Contraseña + "'";
                 Lector_ID = Consulta_ID.ExecuteReader();
@@ -120,7 +121,7 @@ namespace Agencia_de_viajes
                 conn.Close();
 
                 //COMPLETANDO TAREA
-                SqlCommand Completada = new SqlCommand();
+                OracleCommand Completada = new OracleCommand();
                 Completada.Connection = conn;
                 Completada.CommandText = "UPDATE tb_Tareas SET Completado = 1 WHERE Titulo = '" + textBox1.Text + "' AND id =" + ID;
                 conn.Open();

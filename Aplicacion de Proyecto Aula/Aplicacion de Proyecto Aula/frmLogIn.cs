@@ -7,7 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient;
+//using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
+
 
 /*
  Piña Vargas Edgar Diego, 5IM12, 02/12/20, Esta aplicacion hace uso de la libreria
@@ -34,10 +36,10 @@ namespace Agencia_de_viajes
         {
             try
             {
-                SqlDataReader Dr;
-                SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
-                SqlCommand cmd = new SqlCommand();
-               
+                OracleDataReader Dr;
+                OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
+                OracleCommand cmd = new OracleCommand();
+
 
                 conn.Open();
 
@@ -46,7 +48,7 @@ namespace Agencia_de_viajes
                
                 //VALIDANDO USUARIO Y CONTRASEÑA EN SQL
                 Sel.Append("SELECT * FROM tb_Usuarios WHERE Usuario ='" + txtUsuario.Text + "' AND Contraseña = '" + txtContraseña.Text + "'");
-                cmd = new SqlCommand(Sel.ToString(), conn);
+                cmd = new OracleCommand(Sel.ToString(), conn);
                 Dr = cmd.ExecuteReader();
                 if (Dr.Read())
                 {
