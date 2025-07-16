@@ -69,3 +69,5 @@ FROM USER_TABLES;
 
 SELECT * FROM TB_tareas;
 drop table tb_tareas;
+
+SELECT * FROM TB_usuarios;

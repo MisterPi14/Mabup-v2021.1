@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using System.Diagnostics;  //Libreria para la clase Stopwatch
-using System.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 
 
 
@@ -18,7 +18,7 @@ namespace Agencia_de_viajes
     public partial class frmEstimado_de_tiempo : Form
     {
         //INSTANCIAS
-        SqlConnection conn = new SqlConnection(@"Data Source=.; Initial Catalog=BD_Mabup; Integrated Security=True");
+        OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;");
         Stopwatch cronometro = new Stopwatch();
 
         //DATOS
@@ -51,59 +51,71 @@ namespace Agencia_de_viajes
             btnIniciar.Enabled = true;
         }
 
-        private void btnSiguiente_Click(object sender, EventArgs e)
+        private void GuardarEstimado(TimeSpan tiempoEstimado)
         {
-            if(checkBox1.Checked == true)
+            // Usar 'using' asegura que la conexión se cierre incluso si hay un error
+            using (OracleConnection conn = new OracleConnection(@"Data Source=localhost:1521/XEPDB1;User Id=USR_MABUP;Password=123456789;"))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.Connection = conn;
-
-                    //CREANDO REGISTRO
-                    cmd.CommandText = "UPDATE tb_Usuarios SET Estimado_de_tiempo ='" + lblCronometro.Text + "' WHERE id = " + ID;
-
                     conn.Open();
-                    cmd.ExecuteNonQuery();
-                    conn.Close();
+                    // El comando también debe estar en un 'using'
+                    using (OracleCommand cmd = new OracleCommand())
+                    {
+                        cmd.Connection = conn;
+                        cmd.CommandText = "UPDATE tb_Usuarios SET Estimado_de_tiempo = :estimado WHERE id = :id";
 
-                    timer2.Enabled = true;
-                    lblCarga.Visible = true;
-                    picLoad.Visible = true;
+                        // Especifica el tipo de dato y el valor para cada parámetro
+                        cmd.Parameters.Add(":estimado", OracleDbType.IntervalDS, tiempoEstimado, ParameterDirection.Input);
+                        cmd.Parameters.Add(":id", OracleDbType.Int32, ID, ParameterDirection.Input);
+
+                        cmd.ExecuteNonQuery();
+                    }
                 }
-
                 catch (Exception ex)
                 {
-                    MessageBox.Show(ex.Message);
-                    Application.Exit();
+                    MessageBox.Show("Error al guardar en la base de datos: " + ex.Message);
                 }
             }
-            else if (checkBox2.Checked == true)
+        }
+
+        private void btnSiguiente_Click(object sender, EventArgs e)
+        {
+            TimeSpan estimado;
+
+            if (checkBox1.Checked)
             {
-                SqlCommand cmd = new SqlCommand();
-                cmd.Connection = conn;
+                // Opción 1: Obtiene el TimeSpan directamente del cronómetro
+                cronometro.Stop(); // Detiene el cronómetro antes de obtener el valor
+                estimado = cronometro.Elapsed;
+            }
+            else if (checkBox2.Checked)
+            {
+                // Opción 2: Construye el TimeSpan a partir de los textos
+                // Usar TryParse es más seguro para evitar errores de conversión
+                int.TryParse(txtHoras.Text, out int horas);
+                int.TryParse(txtMinutos.Text, out int minutos);
+                int.TryParse(txtSegundos.Text, out int segundos);
 
-                //CREANDO REGISTRO
-                cmd.CommandText = "UPDATE tb_Usuarios SET Estimado_de_tiempo ='" + txtHoras.Text +":"+ txtMinutos.Text +":"+ txtSegundos.Text + "' WHERE id = " + ID;
-
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                conn.Close();
-
-                timer2.Enabled = true;
-                lblCarga.Visible = true;
-                picLoad.Visible = true;
-
-                cronometro.Stop();
-
+                estimado = new TimeSpan(horas, minutos, segundos);
             }
             else
             {
+                // Si no se seleccionó ninguna opción, muestra el aviso y termina
                 lblAviso.Visible = true;
+                return;
             }
-           
 
+            // Llama al método centralizado para guardar el TimeSpan en la base de datos
+            GuardarEstimado(estimado);
+
+            // Activa la animación de carga y el siguiente paso
+            lblAviso.Visible = false;
+            timer2.Enabled = true;
+            lblCarga.Visible = true;
+            picLoad.Visible = true;
         }
+        
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -151,7 +163,7 @@ namespace Agencia_de_viajes
                 checkBox2.Checked = false;
 
                 //Boton Aceptar
-                btnSiguiente.Visible = true; 
+                btnSiguiente.Visible = true;
 
         }
 

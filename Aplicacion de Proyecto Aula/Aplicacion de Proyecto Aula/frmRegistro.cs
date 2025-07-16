@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 
 
@@ -30,11 +29,11 @@ namespace Agencia_de_viajes
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand();
+                    OracleCommand cmd = new OracleCommand();
                     cmd.Connection = conn;
 
                     //CREANDO ID
-                    SqlDataReader Lector;
+                    OracleDataReader Lector;
                     conn.Open();
                     cmd.CommandText = "SELECT MAX(id) AS Ultima_id FROM tb_Usuarios";
                     Lector = cmd.ExecuteReader();
@@ -42,27 +41,31 @@ namespace Agencia_de_viajes
                     ID_Usuario = Convert.ToInt32(Lector[0]) + 1;
                     conn.Close();
 
-                    //CREANDO REGISTRO
-                    cmd.CommandText = "INSERT INTO tb_Usuarios VALUES (@id, @Usuario, @Contraseña, @Nombre, @Ap_Pat, @Ap_Mat, @Estimado_de_tiempo)";
+                    // --- CREANDO REGISTRO (Sintaxis explícita y para Oracle) ---
+                    // Se especifican las columnas y se usa ":" para los parámetros
+                    cmd.CommandText = @"INSERT INTO tb_Usuarios (
+                        id, Usuario, Contraseña, Nombre, Ap_Pat, Ap_Mat, Estimado_de_tiempo
+                    ) VALUES (
+                        :id, :Usuario, :Contraseña, :Nombre, :Ap_Pat, :Ap_Mat, :Estimado_de_tiempo
+                    )";
 
-                    //CREANDO PARAMETROS
-                    cmd.Parameters.Add("@id", SqlDbType.Int);
-                    cmd.Parameters.Add("@Usuario", SqlDbType.NVarChar);
-                    cmd.Parameters.Add("@Contraseña", SqlDbType.NVarChar);
-                    cmd.Parameters.Add("@Nombre", SqlDbType.NVarChar);
-                    cmd.Parameters.Add("@Ap_Pat", SqlDbType.NVarChar);
-                    cmd.Parameters.Add("@Ap_Mat", SqlDbType.NVarChar);
-                    cmd.Parameters.Add("@Estimado_de_tiempo", SqlDbType.Time);
+                    // --- CREANDO PARÁMETROS PARA ORACLE ---
+                    cmd.Parameters.Add(":id", OracleDbType.Int32);
+                    cmd.Parameters.Add(":Usuario", OracleDbType.NVarchar2);
+                    cmd.Parameters.Add(":Contraseña", OracleDbType.NVarchar2);
+                    cmd.Parameters.Add(":Nombre", OracleDbType.NVarchar2);
+                    cmd.Parameters.Add(":Ap_Pat", OracleDbType.NVarchar2);
+                    cmd.Parameters.Add(":Ap_Mat", OracleDbType.NVarchar2);
+                    cmd.Parameters.Add(":Estimado_de_tiempo", OracleDbType.IntervalDS); // Oracle no tiene TIME, se usa Varchar2
 
-                    //ASIGNANDO VALORES A LOS ATRIBUTOS
-
-                    cmd.Parameters["@id"].Value = ID_Usuario;
-                    cmd.Parameters["@Usuario"].Value = txtCorreo.Text;
-                    cmd.Parameters["@Contraseña"].Value = txtContraseña.Text;
-                    cmd.Parameters["@Nombre"].Value = txtNombre.Text;
-                    cmd.Parameters["@Ap_Pat"].Value = txtApellidoPat.Text;
-                    cmd.Parameters["@Ap_Mat"].Value = txtApellidoMat.Text;
-                    cmd.Parameters["@Estimado_de_tiempo"].Value = "0";
+                    // --- ASIGNANDO VALORES A LOS ATRIBUTOS ---
+                    cmd.Parameters[":id"].Value = ID_Usuario;
+                    cmd.Parameters[":Usuario"].Value = txtCorreo.Text;
+                    cmd.Parameters[":Contraseña"].Value = txtContraseña.Text;
+                    cmd.Parameters[":Nombre"].Value = txtNombre.Text;
+                    cmd.Parameters[":Ap_Pat"].Value = txtApellidoPat.Text;
+                    cmd.Parameters[":Ap_Mat"].Value = txtApellidoMat.Text;
+                    cmd.Parameters[":Estimado_de_tiempo"].Value = TimeSpan.Zero;
 
 
                     conn.Open();
