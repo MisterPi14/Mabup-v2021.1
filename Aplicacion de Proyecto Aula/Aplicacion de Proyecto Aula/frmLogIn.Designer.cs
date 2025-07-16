@@ -1,5 +1,6 @@
 ﻿namespace Agencia_de_viajes
 {
+    dfgdg
     partial class frmLogIn
     {
         /// <summary>

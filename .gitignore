@@ -1,21 +1,12 @@
-﻿Imagenes
-
-# Archivos de configuración y binarios
+﻿# Ignorar carpetas comunes
 bin/
 obj/
+.vs/
 *.user
 *.suo
 *.cache
 *.pdb
-*.log
 
-# Archivos de diseño auto-generados
-*.Designer.cs
-*.resx
-
-# Archivos de VS
-.vscode/
-*.vs/
-
-# Archivos temporales de Git
-*.orig
+# Ignorar autogenerados de formularios
+/Aplicacion de Proyecto Aula/**/*.Designer.cs
+/Aplicacion de Proyecto Aula/**/*.resx
