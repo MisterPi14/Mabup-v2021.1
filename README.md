@@ -23,7 +23,7 @@ Esta aplicación tiene como objetivo principal proporcionar una herramienta inte
     - Mensajes de bienvenida personalizados.
     - Transición automática a la ventana principal tras autenticación exitosa.
 
-![gif funcionalidad de Login](https://imgur.com/a/qRaPCdR)
+![gif funcionalidad de Login](https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExaXl5MXM2Z3ZuYTNiajl0NDJrNnU2MDJrcDE3OW1xYmNyOW1mODdtMSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Zed5WMuOKCJVuehdKP/giphy.gif)
 
 ### 2. **frmRegistro** - Registro de Usuarios
 - **Propósito**: Permite el registro de nuevos usuarios en el sistema.
