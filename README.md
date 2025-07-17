@@ -23,6 +23,8 @@ Esta aplicación tiene como objetivo principal proporcionar una herramienta inte
     - Mensajes de bienvenida personalizados.
     - Transición automática a la ventana principal tras autenticación exitosa.
 
+![gif funcionalidad de Login](https://drive.google.com/file/d/1dQJWpk4eYgo38vF6WCoHB6_gWHUY4hAT/view?usp=sharing)
+
 ### 2. **frmRegistro** - Registro de Usuarios
 - **Propósito**: Permite el registro de nuevos usuarios en el sistema.
 - **Funciones**:
@@ -32,6 +34,8 @@ Esta aplicación tiene como objetivo principal proporcionar una herramienta inte
     - Generación automática de ID único para cada usuario.
     - Inserción segura de datos en la base de datos.
     - Transición hacia configuración de tiempo estimado de trabajo.
+      
+![gif funcionalidad de registro](./assets/login.gif)
 
 ### 3. **frmGestor_Tareas** - Gestor Principal de Tareas
 - **Propósito**: Interfaz central para la administración de tareas.
@@ -53,6 +57,9 @@ Esta aplicación tiene como objetivo principal proporcionar una herramienta inte
     - Programación de fecha y hora de entrega.
     - Validación de campos obligatorios antes del guardado.
     - Confirmación visual de tarea agregada exitosamente.
+ 
+![gif funcionalidad de registro](./assets/login.gif)
+
 
 ## Características Técnicas
 
