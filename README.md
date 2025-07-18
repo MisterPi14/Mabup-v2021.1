@@ -93,7 +93,7 @@ The main objective of this application is to provide a comprehensive tool for ma
 - Browses and selects videos from the gallery.
 - Integrated playback in the application.
 
-![videoGallery](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXY5NDluemFoYzc1aXRveTd1a2dpa2UwNHY2YXNwdGVzbmdydDVzcyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/j0LBR14si6jfH5NbjW/giphy.gif)
+![videoGallery](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcTF3dWFvM244cXNlbGc5bWNyMmRudGxqa2RhdGN0dGJ1ZDAzNHc2biZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/j0LBR14si6jfH5NbjW/giphy.gif)
 
 ---
 
