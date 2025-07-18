@@ -63,7 +63,7 @@ The main objective of this application is to provide a comprehensive tool for ma
 - Updates the personal estimated work time test for tasks.
 
 ![delete taks]
-(https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExY3lhMzJxOXNodWoyNW1udGJudTlmenpzbHdobjI0Z3BoeGtjcG9pZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1UH6bxI8WpSZ8TEd0J/giphy.gif)
+(https://i.giphy.com/1UH6bxI8WpSZ8TEd0J.webp)
 
 ---
 
