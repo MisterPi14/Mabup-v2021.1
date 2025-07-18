@@ -62,8 +62,7 @@ The main objective of this application is to provide a comprehensive tool for ma
 - Option to mark tasks as completed (removing tasks from the list).
 - Updates the personal estimated work time test for tasks.
 
-![delete taks]
-(https://i.giphy.com/1UH6bxI8WpSZ8TEd0J.webp)
+![delete taks](https://i.giphy.com/1UH6bxI8WpSZ8TEd0J.webp)
 
 ---
 
